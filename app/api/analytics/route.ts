@@ -5,13 +5,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { event, properties, timestamp } = body
 
-    // Enhanced logging with username-based visitor tracking
+    // Enhanced logging where every interaction is a new visitor
     const analyticsData = {
       event,
       timestamp,
       visitor_id: properties?.visitor_id || "unknown",
-      visitor_type: properties?.visitor_type || "unknown",
-      visitor_username: properties?.visitor_username || "anonymous",
+      visitor_type: "new_visitor", // Always new visitor
       session_id: properties?.session_id || "unknown",
       properties: {
         ...properties,
@@ -21,12 +20,12 @@ export async function POST(request: NextRequest) {
       },
     }
 
-    // Log with clear visitor identification
-    console.log("🔍 NOVA USER ANALYTICS:", {
+    // Log each interaction as a separate visitor
+    console.log("🔍 NOVA ANALYTICS (NEW VISITOR):", {
       "👤 VISITOR": {
         id: analyticsData.visitor_id,
-        type: analyticsData.visitor_type,
-        username: analyticsData.visitor_username,
+        type: "NEW_VISITOR", // Always new
+        is_unique: true,
       },
       "📊 EVENT": {
         name: event,
@@ -34,10 +33,15 @@ export async function POST(request: NextRequest) {
         session: analyticsData.session_id,
       },
       "📋 DETAILS": properties,
+      "🌐 REQUEST": {
+        ip: analyticsData.properties.ip,
+        user_agent: analyticsData.properties.user_agent,
+        referer: analyticsData.properties.referer,
+      },
     })
 
-    // Here you would typically save to your database with username as primary key
-    // Example: await saveUserActivity(analyticsData)
+    // Here you would save each interaction as a separate visitor record
+    // Example: await saveNewVisitorActivity(analyticsData)
 
     return NextResponse.json({ success: true })
   } catch (error) {

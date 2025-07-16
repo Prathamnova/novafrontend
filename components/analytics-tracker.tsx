@@ -9,22 +9,21 @@ interface AnalyticsEvent {
   properties?: Record<string, any>
 }
 
-// Enhanced analytics tracker for username-based visitor tracking
+// Analytics tracker that treats every view as a new visitor
 export default function AnalyticsTracker() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Track page views with username-based visitor data
-    const visitor = getCurrentVisitor()
+    // Create a new unique visitor ID for every single page view
+    const newVisitorId = generateNewVisitorId()
 
     const pageViewData = {
       path: pathname,
       timestamp: new Date().toISOString(),
-      visitor_id: visitor.id,
-      visitor_type: visitor.type,
-      visitor_username: visitor.username,
-      session_id: getSessionId(),
-      page_sequence: getPageSequence(),
+      visitor_id: newVisitorId, // Always new for each view
+      visitor_type: "new_visitor", // Every view is a new visitor
+      session_id: newVisitorId, // Use same ID as visitor for simplicity
+      page_sequence: 1, // Always 1 since each view is a new visitor
     }
 
     // Track with Vercel Analytics
@@ -34,73 +33,23 @@ export default function AnalyticsTracker() {
     sendToCustomAnalytics("page_view", pageViewData)
   }, [pathname])
 
-  const getCurrentVisitor = () => {
-    // Check for logged-in user first
-    const loggedInUser = sessionStorage.getItem("nova_logged_in_user")
-    if (loggedInUser) {
-      return {
-        id: loggedInUser,
-        type: "authenticated_user",
-        username: loggedInUser,
-      }
-    }
-
-    // Check for user who attempted login/signup
-    const attemptedUser = sessionStorage.getItem("nova_attempted_user")
-    if (attemptedUser) {
-      return {
-        id: attemptedUser,
-        type: "attempted_user",
-        username: attemptedUser,
-      }
-    }
-
-    // Check for waitlist user
-    const waitlistUser = sessionStorage.getItem("nova_waitlist_user")
-    if (waitlistUser) {
-      return {
-        id: waitlistUser,
-        type: "waitlist_user",
-        username: waitlistUser, // Using email as username for waitlist users
-      }
-    }
-
-    // Anonymous visitor
-    const anonymousId = getAnonymousVisitorId()
-    return {
-      id: anonymousId,
-      type: "anonymous_visitor",
-      username: null,
-    }
-  }
-
-  const getAnonymousVisitorId = () => {
-    let visitorId = sessionStorage.getItem("nova_anonymous_visitor")
-    if (!visitorId) {
-      visitorId = `anon_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
-      sessionStorage.setItem("nova_anonymous_visitor", visitorId)
-    }
-    return visitorId
-  }
-
-  const getPageSequence = () => {
-    const sequence = Number.parseInt(sessionStorage.getItem("page_sequence") || "0") + 1
-    sessionStorage.setItem("page_sequence", sequence.toString())
-    return sequence
+  const generateNewVisitorId = () => {
+    // Generate a completely new visitor ID for every page view
+    return `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 12)}`
   }
 
   const trackEvent = (event: string, properties?: Record<string, any>) => {
     if (typeof window !== "undefined") {
-      const visitor = getCurrentVisitor()
+      // Create new visitor ID for every event
+      const newVisitorId = generateNewVisitorId()
 
       const eventData: AnalyticsEvent = {
         event,
         properties: {
           ...properties,
-          visitor_id: visitor.id,
-          visitor_type: visitor.type,
-          visitor_username: visitor.username,
-          session_id: getSessionId(),
+          visitor_id: newVisitorId, // Always new visitor
+          visitor_type: "new_visitor",
+          session_id: newVisitorId,
           timestamp: new Date().toISOString(),
           page_url: window.location.href,
         },
@@ -113,7 +62,7 @@ export default function AnalyticsTracker() {
       sendToCustomAnalytics(event, eventData.properties)
 
       // Log to console for development
-      console.log("📊 Analytics Event:", eventData)
+      console.log("📊 Analytics Event (New Visitor):", eventData)
     }
   }
 
@@ -135,50 +84,21 @@ export default function AnalyticsTracker() {
     }
   }
 
-  const getSessionId = () => {
-    let sessionId = sessionStorage.getItem("nova_session_id")
-    if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      sessionStorage.setItem("nova_session_id", sessionId)
-    }
-    return sessionId
-  }
-
-  // Enhanced tracking function with username-based visitor identification
+  // Enhanced tracking function - each action creates a new visitor
   const trackUserAction = (action: string, data?: Record<string, any>) => {
-    const visitor = getCurrentVisitor()
+    const newVisitorId = generateNewVisitorId()
 
     const enrichedData = {
       ...data,
-      visitor_id: visitor.id,
-      visitor_type: visitor.type,
-      visitor_username: visitor.username,
-      session_duration: Date.now() - Number.parseInt(sessionStorage.getItem("session_start") || "0"),
-      page_views_in_session: Number.parseInt(sessionStorage.getItem("page_sequence") || "0"),
-    }
-
-    // Store user data based on action type
-    if (action === "auth_attempt" && data?.username) {
-      sessionStorage.setItem("nova_attempted_user", data.username)
-    }
-
-    if (action === "auth_success" && data?.username) {
-      sessionStorage.setItem("nova_logged_in_user", data.username)
-    }
-
-    if (action === "waitlist_signup" && data?.email) {
-      sessionStorage.setItem("nova_waitlist_user", data.email)
+      visitor_id: newVisitorId, // New visitor for every action
+      visitor_type: "new_visitor",
+      session_id: newVisitorId,
+      action_timestamp: new Date().toISOString(),
+      is_unique_action: true, // Every action is unique since every visitor is new
     }
 
     trackEvent(action, enrichedData)
   }
-
-  // Set up session tracking
-  useEffect(() => {
-    if (!sessionStorage.getItem("session_start")) {
-      sessionStorage.setItem("session_start", Date.now().toString())
-    }
-  }, [])
 
   // Expose tracking functions globally
   useEffect(() => {

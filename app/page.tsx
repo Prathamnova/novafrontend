@@ -25,16 +25,16 @@ export default function HomePage() {
   const handleWaitlistSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (email) {
-      // Enhanced waitlist tracking with username identification
+      // Track waitlist signup as new visitor
       if (typeof window !== "undefined" && (window as any).trackUserAction) {
         ;(window as any).trackUserAction("waitlist_signup", {
-          email: email, // This becomes the username for waitlist users
+          email: email,
           email_domain: email.split("@")[1],
           source: "hero_section",
           form_completion_time: Date.now(),
           email_length: email.length,
           is_business_email: email.includes(".com") || email.includes(".org") || email.includes(".edu"),
-          user_became_visitor: true, // Flag that this user is now identified
+          action_type: "conversion",
         })
       }
       setShowWaitlistSuccess(true)
@@ -43,13 +43,13 @@ export default function HomePage() {
   }
 
   const handleAuthClick = (mode: "login" | "signup") => {
-    // Track auth modal opens with current visitor context
+    // Track auth modal open as new visitor
     if (typeof window !== "undefined" && (window as any).trackUserAction) {
       ;(window as any).trackUserAction("auth_modal_open", {
         mode,
         source: "header",
         button_location: "desktop",
-        time_on_page: Date.now() - Number.parseInt(sessionStorage.getItem("session_start") || "0"),
+        action_type: "engagement",
       })
     }
     setAuthMode(mode)
@@ -57,13 +57,14 @@ export default function HomePage() {
   }
 
   const scrollToSection = (sectionId: string) => {
-    // Track navigation with visitor context
+    // Track navigation as new visitor
     if (typeof window !== "undefined" && (window as any).trackUserAction) {
       ;(window as any).trackUserAction("navigation_click", {
         section: sectionId,
         source: "header",
         scroll_position: window.scrollY,
         viewport_height: window.innerHeight,
+        action_type: "navigation",
       })
     }
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
@@ -86,6 +87,7 @@ export default function HomePage() {
                 ;(window as any).trackUserAction("logo_click", {
                   source: "header",
                   current_page: window.location.pathname,
+                  action_type: "navigation",
                 })
               }
             }}
@@ -127,6 +129,7 @@ export default function HomePage() {
                 ;(window as any).trackUserAction("mobile_menu_toggle", {
                   action: isMenuOpen ? "close" : "open",
                   device: "mobile",
+                  action_type: "interaction",
                 })
               }
               setIsMenuOpen(!isMenuOpen)
@@ -210,12 +213,12 @@ export default function HomePage() {
 
           <Button
             onClick={() => {
-              // Enhanced beta tracking
+              // Track beta modal open as new visitor
               if (typeof window !== "undefined" && (window as any).trackUserAction) {
                 ;(window as any).trackUserAction("beta_modal_open", {
                   source: "hero_cta",
                   scroll_position: window.scrollY,
-                  time_on_page: Date.now() - Number.parseInt(sessionStorage.getItem("session_start") || "0"),
+                  action_type: "conversion_intent",
                 })
               }
               setShowBetaModal(true)

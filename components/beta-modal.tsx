@@ -13,7 +13,7 @@ export default function BetaModal({ isOpen, onClose }: BetaModalProps) {
   const handleRedirect = (url: string) => {
     const platform = url.includes("novasciences") ? "nova_sciences" : "nova_bio"
 
-    // Enhanced platform tracking
+    // Track platform selection as new visitor
     if (typeof window !== "undefined" && (window as any).trackUserAction) {
       ;(window as any).trackUserAction("beta_platform_selected", {
         platform,
@@ -21,7 +21,7 @@ export default function BetaModal({ isOpen, onClose }: BetaModalProps) {
         url,
         source: "beta_modal",
         redirect_timestamp: new Date().toISOString(),
-        time_in_modal: Date.now(),
+        action_type: "conversion",
       })
     }
 
