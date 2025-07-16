@@ -5,43 +5,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { event, properties, timestamp } = body
 
-    // Enhanced logging where every interaction is a new visitor
-    const analyticsData = {
-      event,
-      timestamp,
-      visitor_id: properties?.visitor_id || "unknown",
-      visitor_type: "new_visitor", // Always new visitor
-      session_id: properties?.session_id || "unknown",
-      properties: {
-        ...properties,
-        ip: request.ip || "unknown",
-        user_agent: request.headers.get("user-agent") || "unknown",
-        referer: request.headers.get("referer") || "direct",
-      },
+    // Simplified logging for page views and bounce rate only
+    if (event === "page_view") {
+      console.log("📄 PAGE VIEW:", {
+        "🌐 PAGE": properties?.path || "unknown",
+        "⏰ TIME": timestamp,
+        "🔗 REFERER": request.headers.get("referer") || "direct",
+      })
     }
 
-    // Log each interaction as a separate visitor
-    console.log("🔍 NOVA ANALYTICS (NEW VISITOR):", {
-      "👤 VISITOR": {
-        id: analyticsData.visitor_id,
-        type: "NEW_VISITOR", // Always new
-        is_unique: true,
-      },
-      "📊 EVENT": {
-        name: event,
-        timestamp: timestamp,
-        session: analyticsData.session_id,
-      },
-      "📋 DETAILS": properties,
-      "🌐 REQUEST": {
-        ip: analyticsData.properties.ip,
-        user_agent: analyticsData.properties.user_agent,
-        referer: analyticsData.properties.referer,
-      },
-    })
+    if (event === "bounce") {
+      console.log("⚡ BOUNCE DETECTED:", {
+        "📊 BOUNCED": properties?.bounced || false,
+        "⏱️ TIME_ON_SITE": `${(properties?.time_on_site || 0) / 1000}s`,
+        "📄 PAGES_VIEWED": properties?.pages_viewed || 0,
+        "⏰ TIME": timestamp,
+      })
+    }
 
-    // Here you would save each interaction as a separate visitor record
-    // Example: await saveNewVisitorActivity(analyticsData)
+    // Here you would save only page views and bounce data to your database
+    // Example: await savePageViewOrBounce(event, properties, timestamp)
 
     return NextResponse.json({ success: true })
   } catch (error) {

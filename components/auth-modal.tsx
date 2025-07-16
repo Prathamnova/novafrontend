@@ -21,34 +21,7 @@ export default function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Track authentication attempt as new visitor
-    if (typeof window !== "undefined" && (window as any).trackUserAction) {
-      ;(window as any).trackUserAction("auth_attempt", {
-        mode,
-        username: username,
-        username_length: username.length,
-        has_password: password.length > 0,
-        password_length: password.length,
-        passwords_match: mode === "signup" ? password === confirmPassword : true,
-        form_completion_time: Date.now(),
-        attempt_timestamp: new Date().toISOString(),
-        action_type: "authentication",
-      })
-    }
-
-    // Simulate successful login/signup and track as new visitor
-    if (typeof window !== "undefined" && (window as any).trackUserAction) {
-      ;(window as any).trackUserAction("auth_success", {
-        mode,
-        username: username,
-        user_type: mode === "signup" ? "new_user" : "returning_user",
-        success_timestamp: new Date().toISOString(),
-        action_type: "conversion",
-      })
-    }
-
-    console.log("✅ Auth Success (New Visitor):", { username, mode })
+    console.log("Auth attempt:", { username, mode })
     onClose()
   }
 

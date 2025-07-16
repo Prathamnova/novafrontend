@@ -25,48 +25,17 @@ export default function HomePage() {
   const handleWaitlistSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (email) {
-      // Track waitlist signup as new visitor
-      if (typeof window !== "undefined" && (window as any).trackUserAction) {
-        ;(window as any).trackUserAction("waitlist_signup", {
-          email: email,
-          email_domain: email.split("@")[1],
-          source: "hero_section",
-          form_completion_time: Date.now(),
-          email_length: email.length,
-          is_business_email: email.includes(".com") || email.includes(".org") || email.includes(".edu"),
-          action_type: "conversion",
-        })
-      }
       setShowWaitlistSuccess(true)
       setEmail("")
     }
   }
 
   const handleAuthClick = (mode: "login" | "signup") => {
-    // Track auth modal open as new visitor
-    if (typeof window !== "undefined" && (window as any).trackUserAction) {
-      ;(window as any).trackUserAction("auth_modal_open", {
-        mode,
-        source: "header",
-        button_location: "desktop",
-        action_type: "engagement",
-      })
-    }
     setAuthMode(mode)
     setShowAuthModal(true)
   }
 
   const scrollToSection = (sectionId: string) => {
-    // Track navigation as new visitor
-    if (typeof window !== "undefined" && (window as any).trackUserAction) {
-      ;(window as any).trackUserAction("navigation_click", {
-        section: sectionId,
-        source: "header",
-        scroll_position: window.scrollY,
-        viewport_height: window.innerHeight,
-        action_type: "navigation",
-      })
-    }
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
     setIsMenuOpen(false)
   }
@@ -80,18 +49,7 @@ export default function HomePage() {
       <header className="relative z-50 px-6 py-4">
         <nav className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo */}
-          <div
-            className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent cursor-pointer"
-            onClick={() => {
-              if (typeof window !== "undefined" && (window as any).trackUserAction) {
-                ;(window as any).trackUserAction("logo_click", {
-                  source: "header",
-                  current_page: window.location.pathname,
-                  action_type: "navigation",
-                })
-              }
-            }}
-          >
+          <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent cursor-pointer">
             NOVA
           </div>
 
@@ -122,19 +80,7 @@ export default function HomePage() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => {
-              if (typeof window !== "undefined" && (window as any).trackUserAction) {
-                ;(window as any).trackUserAction("mobile_menu_toggle", {
-                  action: isMenuOpen ? "close" : "open",
-                  device: "mobile",
-                  action_type: "interaction",
-                })
-              }
-              setIsMenuOpen(!isMenuOpen)
-            }}
-          >
+          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </nav>
@@ -212,17 +158,7 @@ export default function HomePage() {
           </div>
 
           <Button
-            onClick={() => {
-              // Track beta modal open as new visitor
-              if (typeof window !== "undefined" && (window as any).trackUserAction) {
-                ;(window as any).trackUserAction("beta_modal_open", {
-                  source: "hero_cta",
-                  scroll_position: window.scrollY,
-                  action_type: "conversion_intent",
-                })
-              }
-              setShowBetaModal(true)
-            }}
+            onClick={() => setShowBetaModal(true)}
             size="lg"
             className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-lg px-8 py-4"
           >
@@ -479,7 +415,7 @@ export default function HomePage() {
               <p className="text-gray-400 italic">"Backed by science. Powered by imagination."</p>
             </div>
           </div>
-          <div className="text-center text-gray-500 text-sm">© 2024 Nova. All rights reserved.</div>
+          <div className="text-center text-gray-500 text-sm">{"\u00A9"} 2024 Nova. All rights reserved.</div>
         </div>
       </footer>
 

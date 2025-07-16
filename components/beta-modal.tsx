@@ -11,20 +11,6 @@ interface BetaModalProps {
 
 export default function BetaModal({ isOpen, onClose }: BetaModalProps) {
   const handleRedirect = (url: string) => {
-    const platform = url.includes("novasciences") ? "nova_sciences" : "nova_bio"
-
-    // Track platform selection as new visitor
-    if (typeof window !== "undefined" && (window as any).trackUserAction) {
-      ;(window as any).trackUserAction("beta_platform_selected", {
-        platform,
-        platform_name: platform === "nova_sciences" ? "Nova Sciences" : "Nova Bio",
-        url,
-        source: "beta_modal",
-        redirect_timestamp: new Date().toISOString(),
-        action_type: "conversion",
-      })
-    }
-
     window.open(url, "_blank")
     onClose()
   }

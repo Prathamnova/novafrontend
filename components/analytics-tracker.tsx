@@ -1,30 +1,24 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { track } from "@vercel/analytics"
 
-interface AnalyticsEvent {
-  event: string
-  properties?: Record<string, any>
-}
-
-// Analytics tracker that treats every view as a new visitor
+// Simplified analytics tracker for page views and bounce rate only
 export default function AnalyticsTracker() {
   const pathname = usePathname()
+  const [sessionStartTime] = useState(Date.now())
+  const [pageViewCount, setPageViewCount] = useState(0)
 
   useEffect(() => {
-    // Create a new unique visitor ID for every single page view
-    const newVisitorId = generateNewVisitorId()
-
+    // Track page view
     const pageViewData = {
       path: pathname,
       timestamp: new Date().toISOString(),
-      visitor_id: newVisitorId, // Always new for each view
-      visitor_type: "new_visitor", // Every view is a new visitor
-      session_id: newVisitorId, // Use same ID as visitor for simplicity
-      page_sequence: 1, // Always 1 since each view is a new visitor
     }
+
+    // Increment page view count for bounce rate calculation
+    setPageViewCount((prev) => prev + 1)
 
     // Track with Vercel Analytics
     track("page_view", pageViewData)
@@ -33,38 +27,49 @@ export default function AnalyticsTracker() {
     sendToCustomAnalytics("page_view", pageViewData)
   }, [pathname])
 
-  const generateNewVisitorId = () => {
-    // Generate a completely new visitor ID for every page view
-    return `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 12)}`
-  }
+  useEffect(() => {
+    // Track bounce rate when user leaves or after timeout
+    const handleBeforeUnload = () => {
+      const timeOnSite = Date.now() - sessionStartTime
+      const bounced = pageViewCount <= 1 && timeOnSite < 30000 // Less than 30 seconds on single page
 
-  const trackEvent = (event: string, properties?: Record<string, any>) => {
-    if (typeof window !== "undefined") {
-      // Create new visitor ID for every event
-      const newVisitorId = generateNewVisitorId()
-
-      const eventData: AnalyticsEvent = {
-        event,
-        properties: {
-          ...properties,
-          visitor_id: newVisitorId, // Always new visitor
-          visitor_type: "new_visitor",
-          session_id: newVisitorId,
+      if (bounced) {
+        const bounceData = {
+          bounced: true,
+          time_on_site: timeOnSite,
+          pages_viewed: pageViewCount,
           timestamp: new Date().toISOString(),
-          page_url: window.location.href,
-        },
+        }
+
+        // Track bounce
+        track("bounce", bounceData)
+        sendToCustomAnalytics("bounce", bounceData)
       }
-
-      // Send to Vercel Analytics
-      track(event, eventData.properties)
-
-      // Send to custom analytics endpoint
-      sendToCustomAnalytics(event, eventData.properties)
-
-      // Log to console for development
-      console.log("📊 Analytics Event (New Visitor):", eventData)
     }
-  }
+
+    // Track bounce on page unload
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    // Track bounce after 30 seconds if still on single page
+    const bounceTimer = setTimeout(() => {
+      if (pageViewCount === 1) {
+        const bounceData = {
+          bounced: true,
+          time_on_site: 30000,
+          pages_viewed: 1,
+          timestamp: new Date().toISOString(),
+        }
+
+        track("bounce", bounceData)
+        sendToCustomAnalytics("bounce", bounceData)
+      }
+    }, 30000)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+      clearTimeout(bounceTimer)
+    }
+  }, [sessionStartTime, pageViewCount])
 
   const sendToCustomAnalytics = async (event: string, properties?: Record<string, any>) => {
     try {
@@ -83,30 +88,6 @@ export default function AnalyticsTracker() {
       console.error("Failed to send custom analytics:", error)
     }
   }
-
-  // Enhanced tracking function - each action creates a new visitor
-  const trackUserAction = (action: string, data?: Record<string, any>) => {
-    const newVisitorId = generateNewVisitorId()
-
-    const enrichedData = {
-      ...data,
-      visitor_id: newVisitorId, // New visitor for every action
-      visitor_type: "new_visitor",
-      session_id: newVisitorId,
-      action_timestamp: new Date().toISOString(),
-      is_unique_action: true, // Every action is unique since every visitor is new
-    }
-
-    trackEvent(action, enrichedData)
-  }
-
-  // Expose tracking functions globally
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      ;(window as any).trackNovaEvent = trackEvent
-      ;(window as any).trackUserAction = trackUserAction
-    }
-  }, [])
 
   return null
 }
