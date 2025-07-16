@@ -5,21 +5,39 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { event, properties, timestamp } = body
 
-    // Log to console (in production, you'd save to database)
-    console.log("🔍 NOVA ANALYTICS:", {
+    // Enhanced logging with username-based visitor tracking
+    const analyticsData = {
       event,
       timestamp,
-      properties,
-      ip: request.ip || "unknown",
-      headers: {
-        "user-agent": request.headers.get("user-agent"),
-        referer: request.headers.get("referer"),
-        "x-forwarded-for": request.headers.get("x-forwarded-for"),
+      visitor_id: properties?.visitor_id || "unknown",
+      visitor_type: properties?.visitor_type || "unknown",
+      visitor_username: properties?.visitor_username || "anonymous",
+      session_id: properties?.session_id || "unknown",
+      properties: {
+        ...properties,
+        ip: request.ip || "unknown",
+        user_agent: request.headers.get("user-agent") || "unknown",
+        referer: request.headers.get("referer") || "direct",
       },
+    }
+
+    // Log with clear visitor identification
+    console.log("🔍 NOVA USER ANALYTICS:", {
+      "👤 VISITOR": {
+        id: analyticsData.visitor_id,
+        type: analyticsData.visitor_type,
+        username: analyticsData.visitor_username,
+      },
+      "📊 EVENT": {
+        name: event,
+        timestamp: timestamp,
+        session: analyticsData.session_id,
+      },
+      "📋 DETAILS": properties,
     })
 
-    // Here you would typically save to your database
-    // Example: await saveToDatabase(event, properties, timestamp)
+    // Here you would typically save to your database with username as primary key
+    // Example: await saveUserActivity(analyticsData)
 
     return NextResponse.json({ success: true })
   } catch (error) {

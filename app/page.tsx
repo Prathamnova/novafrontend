@@ -25,15 +25,16 @@ export default function HomePage() {
   const handleWaitlistSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (email) {
-      // Enhanced waitlist tracking
+      // Enhanced waitlist tracking with username identification
       if (typeof window !== "undefined" && (window as any).trackUserAction) {
         ;(window as any).trackUserAction("waitlist_signup", {
-          email: email, // Full email for your tracking
+          email: email, // This becomes the username for waitlist users
           email_domain: email.split("@")[1],
           source: "hero_section",
           form_completion_time: Date.now(),
           email_length: email.length,
           is_business_email: email.includes(".com") || email.includes(".org") || email.includes(".edu"),
+          user_became_visitor: true, // Flag that this user is now identified
         })
       }
       setShowWaitlistSuccess(true)
@@ -42,7 +43,7 @@ export default function HomePage() {
   }
 
   const handleAuthClick = (mode: "login" | "signup") => {
-    // Enhanced auth tracking
+    // Track auth modal opens with current visitor context
     if (typeof window !== "undefined" && (window as any).trackUserAction) {
       ;(window as any).trackUserAction("auth_modal_open", {
         mode,
@@ -56,7 +57,7 @@ export default function HomePage() {
   }
 
   const scrollToSection = (sectionId: string) => {
-    // Enhanced navigation tracking
+    // Track navigation with visitor context
     if (typeof window !== "undefined" && (window as any).trackUserAction) {
       ;(window as any).trackUserAction("navigation_click", {
         section: sectionId,
