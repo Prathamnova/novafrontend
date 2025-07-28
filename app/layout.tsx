@@ -1,19 +1,15 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
 import "./globals.css"
-import { AuthProvider } from "@/hooks/use-auth"
-import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
-import { AnalyticsProvider } from "@/hooks/use-analytics"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Nova - Superintelligent OS for Scientific Discovery",
+  title: "Nova - Superintelligent Scientific OS",
   description:
-    "A superintelligent OS where anyone can ideate, simulate, prototype and publish their innovation and scientific discovery - from a scientist to a student.",
-    generator: 'v0.dev'
+    "A superintelligent OS where anyone can ideate, simulate, prototype and publish their innovation and scientific discovery - from a scientist to a student",
+  generator: "Nova Sciences",
 }
 
 export default function RootLayout({
@@ -23,15 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AnalyticsProvider>
-          <AuthProvider>
-            <Suspense fallback={<div>Loading...</div>}>
-              {children}
-              <Analytics />
-            </Suspense>
-          </AuthProvider>
-        </AnalyticsProvider>
+      <body>
+        <Suspense fallback={null}>
+          {children}
+          <SpeedInsights />
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   )
