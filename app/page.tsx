@@ -217,7 +217,7 @@ export default function HomePage() {
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Our Team
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
             {/* CEO */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
@@ -425,6 +425,24 @@ export default function HomePage() {
                   <p className="text-yellow-400 text-sm font-medium mb-2">Mentor</p>
                 </div>
                 <p className="text-gray-400 text-xs">IITKGP ex-dean, guiding Nova's research direction</p>
+              </CardContent>
+            </Card>
+
+            {/* Arkay Kadam - Intern Scientist */}
+            <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
+              <CardContent className="p-6 text-center">
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Aryan Kadam"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <h3 className="text-lg font-semibold mb-1 text-white text-center">Aryan Kadam</h3>
+                  <p className="text-cyan-400 text-sm font-medium mb-2">Intern Scientist</p>
+                </div>
+                <p className="text-gray-400 text-xs">Contributing to Nova's scientific research and development</p>
               </CardContent>
             </Card>
           </div>
