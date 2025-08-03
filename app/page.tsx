@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Menu, X, Mail, Github, Twitter, Linkedin, Zap, FlaskConical, Atom } from "lucide-react"
+import { Menu, X, Mail, Github, Twitter, Linkedin, Zap, FlaskConical, Atom, ExternalLink } from "lucide-react"
 import FloatingElements from "@/components/floating-elements"
 import AuthModal from "@/components/auth-modal"
 import BetaModal from "@/components/beta-modal"
@@ -38,6 +38,10 @@ export default function HomePage() {
   const scrollToSection = (sectionId: string) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
     setIsMenuOpen(false)
+  }
+
+  const handleProfileClick = (url: string, name: string) => {
+    window.open(url, "_blank", "noopener,noreferrer")
   }
 
   return (
@@ -217,11 +221,17 @@ export default function HomePage() {
             {/* CEO */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  PS
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Prathamesh Shirbhate"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Prathamesh Shirbhate</h3>
-                <p className="text-blue-400 text-sm font-medium mb-2">CEO</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <h3 className="text-lg font-semibold mb-1 text-white text-center">Prathamesh Shirbhate</h3>
+                  <p className="text-blue-400 text-sm font-medium mb-2">CEO</p>
+                </div>
                 <p className="text-gray-400 text-xs">Leading Nova's vision for scientific innovation</p>
               </CardContent>
             </Card>
@@ -229,23 +239,49 @@ export default function HomePage() {
             {/* CTO */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  AG
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Aditya Gole"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Aditya Gole</h3>
-                <p className="text-purple-400 text-sm font-medium mb-2">CTO</p>
-                <p className="text-gray-400 text-xs">Architecting Nova's technical infrastructure</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() => handleProfileClick("https://www.instagram.com/aditya_gole_13/?hl=en", "Aditya Gole")}
+                    className="group text-lg font-semibold mb-1 text-white hover:text-purple-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    Aditya Gole
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-purple-400 text-sm font-medium mb-2">Intern</p>
+                </div>
+                <p className="text-gray-400 text-xs">Contributing to Nova's technical development and innovation</p>
               </CardContent>
             </Card>
 
             {/* PhD Chemistry */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  SS
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Sunil Shingade"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Sunil Shingade</h3>
-                <p className="text-green-400 text-sm font-medium mb-2">PhD Chemistry</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() =>
+                      handleProfileClick("https://www.linkedin.com/in/sunil-shingade-552712145/", "Sunil Shingade")
+                    }
+                    className="group text-lg font-semibold mb-1 text-white hover:text-green-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    Sunil Shingade
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-green-400 text-sm font-medium mb-2">PhD Chemistry</p>
+                </div>
                 <p className="text-gray-400 text-xs">Chemical simulation and molecular modeling</p>
               </CardContent>
             </Card>
@@ -253,23 +289,54 @@ export default function HomePage() {
             {/* PhD Mathematics */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-orange-400 to-red-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  AH
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-orange-400 to-red-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Amit Hogadi"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Amit Hogadi</h3>
-                <p className="text-orange-400 text-sm font-medium mb-2">PhD Mathematics</p>
-                <p className="text-gray-400 text-xs">Mathematical modeling and algorithms</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() =>
+                      handleProfileClick("https://scholar.google.com/citations?user=1TN8CfwAAAAJ&hl=en", "Amit Hogadi")
+                    }
+                    className="group text-lg font-semibold mb-1 text-white hover:text-orange-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    Amit Hogadi
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-orange-400 text-sm font-medium mb-2">Mentor</p>
+                </div>
+                <p className="text-gray-400 text-xs">Guiding Nova's mathematical foundations and research</p>
               </CardContent>
             </Card>
 
             {/* PhD Biology */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-rose-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  NB
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-rose-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Nagraj Balasubramanian"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Nagraj Balasubramanian</h3>
-                <p className="text-pink-400 text-sm font-medium mb-2">PhD Biology</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() =>
+                      handleProfileClick(
+                        "https://scholar.google.com/citations?user=_8IOi4IAAAAJ&hl=en",
+                        "Nagraj Balasubramanian",
+                      )
+                    }
+                    className="group text-lg font-semibold mb-1 text-white hover:text-pink-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    Nagraj Balasubramanian
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-pink-400 text-sm font-medium mb-2">PhD Biology</p>
+                </div>
                 <p className="text-gray-400 text-xs">Biological systems and life sciences</p>
               </CardContent>
             </Card>
@@ -277,11 +344,28 @@ export default function HomePage() {
             {/* PhD Physics */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  AC
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Apratim Chatterji"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Apratim Chatterji</h3>
-                <p className="text-indigo-400 text-sm font-medium mb-2">PhD Physics</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() =>
+                      handleProfileClick(
+                        "https://scholar.google.co.in/citations?user=_8ZpOOwAAAAJ&hl=en",
+                        "Apratim Chatterji",
+                      )
+                    }
+                    className="group text-lg font-semibold mb-1 text-white hover:text-indigo-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    Apratim Chatterji
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-indigo-400 text-sm font-medium mb-2">PhD Physics</p>
+                </div>
                 <p className="text-gray-400 text-xs">Physics simulations and quantum modeling</p>
               </CardContent>
             </Card>
@@ -289,23 +373,57 @@ export default function HomePage() {
             {/* Sanjeeva Srivastava */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-teal-400 to-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  SS
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-teal-400 to-blue-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="Sanjeeva Srivastava"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">Sanjeeva Srivastava</h3>
-                <p className="text-teal-400 text-sm font-medium mb-2">Team Member</p>
-                <p className="text-gray-400 text-xs">Contributing to Nova's scientific innovation</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() =>
+                      handleProfileClick(
+                        "https://scholar.google.com/citations?user=CUzQFQQAAAAJ&hl=en",
+                        "Sanjeeva Srivastava",
+                      )
+                    }
+                    className="group text-lg font-semibold mb-1 text-white hover:text-teal-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    Sanjeeva Srivastava
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-teal-400 text-sm font-medium mb-2">PhD Biology</p>
+                </div>
+                <p className="text-gray-400 text-xs">Biological systems and computational biology</p>
               </CardContent>
             </Card>
 
-            {/* AI/ML Genius */}
+            {/* Mentor */}
             <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                  PC
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=96&width=96"
+                    alt="P.P. Chakrabarti"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-1 text-white">P.P. Chakrabatri</h3>
-                <p className="text-yellow-400 text-sm font-medium mb-2">Mentor</p>
+                <div className="min-h-[60px] flex flex-col justify-center">
+                  <button
+                    onClick={() =>
+                      handleProfileClick(
+                        "https://scholar.google.com/citations?user=yq-ekN8AAAAJ&hl=en",
+                        "P.P. Chakrabarti",
+                      )
+                    }
+                    className="group text-lg font-semibold mb-1 text-white hover:text-yellow-400 transition-colors flex items-center justify-center gap-1"
+                  >
+                    P.P. Chakrabarti
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                  <p className="text-yellow-400 text-sm font-medium mb-2">Mentor</p>
+                </div>
                 <p className="text-gray-400 text-xs">IITKGP ex-dean, guiding Nova's research direction</p>
               </CardContent>
             </Card>
